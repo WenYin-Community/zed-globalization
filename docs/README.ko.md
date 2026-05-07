@@ -14,10 +14,17 @@
 
 | 플랫폼 | 파일 | 설치 방법 |
 |--------|------|----------|
-| macOS (Apple Silicon) | `zedg-zh-cn-macos-aarch64.dmg` | `brew tap x6nux/zedg && brew install --cask zedg` ([자세히](#macos-설치)) |
-| Windows (x64) | `zedg-zh-cn-windows-x86_64.zip` | `scoop install zedg` ([자세히](#windows-scoop)) |
-| Linux (x64) | `zed-globalization-zh-cn-linux-x86_64.tar.gz` | `/usr/local`에 압축 해제 |
-| Linux (x64 deb) | `zed-globalization-zh-cn-linux-x86_64.deb` | `sudo dpkg -i *.deb` |
+| macOS (Universal) | `zedg-zh-cn-macos-universal-*.dmg` | `brew tap x6nux/zedg && brew install --cask zedg` ([자세히](#macos-설치)) |
+| macOS (Apple Silicon) | `zedg-zh-cn-macos-aarch64-*.dmg` | DMG 수동 설치 |
+| macOS (Intel) | `zedg-zh-cn-macos-x86_64-*.dmg` | DMG 수동 설치 |
+| Windows (x64) | `zedg-zh-cn-windows-x86_64-*.zip` | `scoop install zedg` ([자세히](#windows-scoop)) |
+| Windows (ARM64) | `zedg-zh-cn-windows-aarch64-*.zip` | 압축 해제 후 `ZedG.exe` 실행 |
+| Linux (x64) | `zedg-zh-cn-linux-x86_64-*.tar.gz` | `/usr/local`에 압축 해제 |
+| Linux (x64 deb) | `zedg-zh-cn-linux-x86_64-*.deb` | `sudo dpkg -i *.deb` |
+| Linux (x64 rpm) | `zedg-zh-cn-linux-x86_64-*.rpm` | `sudo dnf install *.rpm` |
+| Linux (ARM64) | `zedg-zh-cn-linux-aarch64-*.tar.gz` | `/usr/local`에 압축 해제 |
+| Linux (ARM64 deb) | `zedg-zh-cn-linux-aarch64-*.deb` | `sudo dpkg -i *.deb` |
+| Linux (ARM64 rpm) | `zedg-zh-cn-linux-aarch64-*.rpm` | `sudo dnf install *.rpm` |
 
 ### macOS 설치
 

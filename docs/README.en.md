@@ -14,10 +14,17 @@ Get the pre-built binaries from [Releases](https://github.com/x6nux/zed-globaliz
 
 | Platform | File | Installation |
 |----------|------|-------------|
-| macOS (Apple Silicon) | `zedg-zh-cn-macos-aarch64.dmg` | `brew tap x6nux/zedg && brew install --cask zedg` ([more](#macos-installation)) |
-| Windows (x64) | `zedg-zh-cn-windows-x86_64.zip` | `scoop install zedg` ([more](#windows-scoop)) |
-| Linux (x64) | `zed-globalization-zh-cn-linux-x86_64.tar.gz` | Extract to `/usr/local` |
-| Linux (x64 deb) | `zed-globalization-zh-cn-linux-x86_64.deb` | `sudo dpkg -i *.deb` |
+| macOS (Universal) | `zedg-zh-cn-macos-universal-*.dmg` | `brew tap x6nux/zedg && brew install --cask zedg` ([more](#macos-installation)) |
+| macOS (Apple Silicon) | `zedg-zh-cn-macos-aarch64-*.dmg` | DMG manual install |
+| macOS (Intel) | `zedg-zh-cn-macos-x86_64-*.dmg` | DMG manual install |
+| Windows (x64) | `zedg-zh-cn-windows-x86_64-*.zip` | `scoop install zedg` ([more](#windows-scoop)) |
+| Windows (ARM64) | `zedg-zh-cn-windows-aarch64-*.zip` | Extract and run `ZedG.exe` |
+| Linux (x64) | `zedg-zh-cn-linux-x86_64-*.tar.gz` | Extract to `/usr/local` |
+| Linux (x64 deb) | `zedg-zh-cn-linux-x86_64-*.deb` | `sudo dpkg -i *.deb` |
+| Linux (x64 rpm) | `zedg-zh-cn-linux-x86_64-*.rpm` | `sudo dnf install *.rpm` |
+| Linux (ARM64) | `zedg-zh-cn-linux-aarch64-*.tar.gz` | Extract to `/usr/local` |
+| Linux (ARM64 deb) | `zedg-zh-cn-linux-aarch64-*.deb` | `sudo dpkg -i *.deb` |
+| Linux (ARM64 rpm) | `zedg-zh-cn-linux-aarch64-*.rpm` | `sudo dnf install *.rpm` |
 
 ### macOS Installation
 

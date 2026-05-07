@@ -984,7 +984,7 @@ jobs:
             libxcb-shape0-dev libxcb-xfixes0-dev libxcb-xinerama0-dev \
             libxcb-randr0-dev libxcb-keysyms1-dev libxcb-util-dev \
             libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev libfontconfig1-dev \
-            libssl-dev libudev-dev libclang-dev clang cmake mold
+            libssl-dev libudev-dev libclang-dev clang cmake mold rpm
           echo "RUSTFLAGS=-C linker=clang -C link-arg=-fuse-ld=mold" >> $GITHUB_ENV
 
       - name: 克隆 Zed 源码并检出 Tag
@@ -1247,6 +1247,17 @@ jobs:
           CTRL
           dpkg-deb --build deb-pkg "zedg-${LANG_LOWER}-linux-x86_64-${BUILD_VERSION}.deb"
 
+          # === rpm 包 ===
+          RPM_VERSION=$(echo "$CLEAN_VERSION" | sed 's/-pre/.pre/g; s/-/./g')
+          mkdir -p "$GITHUB_WORKSPACE/rpmbuild"/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          rpmbuild -bb "$GITHUB_WORKSPACE/packaging/rpm/zedg.spec" \
+            --define "_topdir $GITHUB_WORKSPACE/rpmbuild" \
+            --define "_zedg_version $RPM_VERSION" \
+            --define "_zedg_dist $GITHUB_WORKSPACE/dist" \
+            --target x86_64
+          cp rpmbuild/RPMS/x86_64/*.rpm \
+            "zedg-${LANG_LOWER}-linux-x86_64-${BUILD_VERSION}.rpm"
+
       - name: 上传产物
         uses: actions/upload-artifact@v4
         with:
@@ -1254,6 +1265,7 @@ jobs:
           path: |
             zedg-${{ env.LANG_LOWER }}-linux-x86_64-${{ env.BUILD_VERSION }}.tar.gz
             zedg-${{ env.LANG_LOWER }}-linux-x86_64-${{ env.BUILD_VERSION }}.deb
+            zedg-${{ env.LANG_LOWER }}-linux-x86_64-${{ env.BUILD_VERSION }}.rpm
 
   # ===========================================================================
   # 5a. macOS aarch64 编译（Apple Silicon）
@@ -1872,7 +1884,7 @@ jobs:
             libxcb-shape0-dev libxcb-xfixes0-dev libxcb-xinerama0-dev \
             libxcb-randr0-dev libxcb-keysyms1-dev libxcb-util-dev \
             libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev libfontconfig1-dev \
-            libssl-dev libudev-dev libclang-dev clang cmake mold
+            libssl-dev libudev-dev libclang-dev clang cmake mold rpm
           echo "RUSTFLAGS=-C linker=clang -C link-arg=-fuse-ld=mold" >> $GITHUB_ENV
 
       - name: 克隆 Zed 源码并检出 Tag
@@ -2129,6 +2141,17 @@ jobs:
           CTRL
           dpkg-deb --build deb-pkg "zedg-${LANG_LOWER}-linux-aarch64-${BUILD_VERSION}.deb"
 
+          # === rpm 包 ===
+          RPM_VERSION=$(echo "$CLEAN_VERSION" | sed 's/-pre/.pre/g; s/-/./g')
+          mkdir -p "$GITHUB_WORKSPACE/rpmbuild"/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          rpmbuild -bb "$GITHUB_WORKSPACE/packaging/rpm/zedg.spec" \
+            --define "_topdir $GITHUB_WORKSPACE/rpmbuild" \
+            --define "_zedg_version $RPM_VERSION" \
+            --define "_zedg_dist $GITHUB_WORKSPACE/dist" \
+            --target aarch64
+          cp rpmbuild/RPMS/aarch64/*.rpm \
+            "zedg-${LANG_LOWER}-linux-aarch64-${BUILD_VERSION}.rpm"
+
       - name: 上传产物
         uses: actions/upload-artifact@v4
         with:
@@ -2136,6 +2159,7 @@ jobs:
           path: |
             zedg-${{ env.LANG_LOWER }}-linux-aarch64-${{ env.BUILD_VERSION }}.tar.gz
             zedg-${{ env.LANG_LOWER }}-linux-aarch64-${{ env.BUILD_VERSION }}.deb
+            zedg-${{ env.LANG_LOWER }}-linux-aarch64-${{ env.BUILD_VERSION }}.rpm
 
   # ===========================================================================
   # 6. 正式发布
@@ -2220,8 +2244,10 @@ jobs:
           mv "artifacts/zed-windows-msi/zedg-${LANG_LOWER}-windows-aarch64-${BUILD_VERSION}.msi" release-dist/ || echo "No Windows aarch64 MSI"
           mv "artifacts/zed-linux/zedg-${LANG_LOWER}-linux-x86_64-${BUILD_VERSION}.tar.gz" release-dist/ || echo "No Linux x86_64 tar artifact"
           mv "artifacts/zed-linux/zedg-${LANG_LOWER}-linux-x86_64-${BUILD_VERSION}.deb" release-dist/ || echo "No Linux x86_64 deb artifact"
+          mv "artifacts/zed-linux/zedg-${LANG_LOWER}-linux-x86_64-${BUILD_VERSION}.rpm" release-dist/ || echo "No Linux x86_64 rpm artifact"
           mv "artifacts/zed-linux-arm64/zedg-${LANG_LOWER}-linux-aarch64-${BUILD_VERSION}.tar.gz" release-dist/ || echo "No Linux ARM64 tar artifact"
           mv "artifacts/zed-linux-arm64/zedg-${LANG_LOWER}-linux-aarch64-${BUILD_VERSION}.deb" release-dist/ || echo "No Linux ARM64 deb artifact"
+          mv "artifacts/zed-linux-arm64/zedg-${LANG_LOWER}-linux-aarch64-${BUILD_VERSION}.rpm" release-dist/ || echo "No Linux ARM64 rpm artifact"
           mv "artifacts/zed-macos/zedg-${LANG_LOWER}-macos-universal-${BUILD_VERSION}.dmg" release-dist/ || echo "No macOS Universal artifact"
           mv "artifacts/zed-macos/zedg-${LANG_LOWER}-macos-aarch64-${BUILD_VERSION}.dmg" release-dist/ || echo "No macOS aarch64 artifact"
           mv "artifacts/zed-macos/zedg-${LANG_LOWER}-macos-x86_64-${BUILD_VERSION}.dmg" release-dist/ || echo "No macOS x86_64 artifact"

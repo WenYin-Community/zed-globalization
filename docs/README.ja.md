@@ -14,10 +14,17 @@
 
 | プラットフォーム | ファイル | インストール方法 |
 |-----------------|---------|----------------|
-| macOS (Apple Silicon) | `zedg-zh-cn-macos-aarch64.dmg` | `brew tap x6nux/zedg && brew install --cask zedg`（[詳細](#macos-インストール)） |
-| Windows (x64) | `zedg-zh-cn-windows-x86_64.zip` | `scoop install zedg`（[詳細](#windows-scoop)） |
-| Linux (x64) | `zed-globalization-zh-cn-linux-x86_64.tar.gz` | `/usr/local` に解凍 |
-| Linux (x64 deb) | `zed-globalization-zh-cn-linux-x86_64.deb` | `sudo dpkg -i *.deb` |
+| macOS (Universal) | `zedg-zh-cn-macos-universal-*.dmg` | `brew tap x6nux/zedg && brew install --cask zedg`（[詳細](#macos-インストール)） |
+| macOS (Apple Silicon) | `zedg-zh-cn-macos-aarch64-*.dmg` | DMG 手動インストール |
+| macOS (Intel) | `zedg-zh-cn-macos-x86_64-*.dmg` | DMG 手動インストール |
+| Windows (x64) | `zedg-zh-cn-windows-x86_64-*.zip` | `scoop install zedg`（[詳細](#windows-scoop)） |
+| Windows (ARM64) | `zedg-zh-cn-windows-aarch64-*.zip` | 解凍して `ZedG.exe` を実行 |
+| Linux (x64) | `zedg-zh-cn-linux-x86_64-*.tar.gz` | `/usr/local` に解凍 |
+| Linux (x64 deb) | `zedg-zh-cn-linux-x86_64-*.deb` | `sudo dpkg -i *.deb` |
+| Linux (x64 rpm) | `zedg-zh-cn-linux-x86_64-*.rpm` | `sudo dnf install *.rpm` |
+| Linux (ARM64) | `zedg-zh-cn-linux-aarch64-*.tar.gz` | `/usr/local` に解凍 |
+| Linux (ARM64 deb) | `zedg-zh-cn-linux-aarch64-*.deb` | `sudo dpkg -i *.deb` |
+| Linux (ARM64 rpm) | `zedg-zh-cn-linux-aarch64-*.rpm` | `sudo dnf install *.rpm` |
 
 ### macOS インストール
 
