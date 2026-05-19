@@ -148,6 +148,12 @@ jobs:
           echo "aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuFEqC052YzKGXRBz5GVBrKqFk7pVEbfYJ5VDdeXwOd" >> ~/.ssh/known_hosts
           printf 'Host aur.archlinux.org\n  IdentityFile ~/.ssh/aur\n  User aur\n' > ~/.ssh/config
           chmod 600 ~/.ssh/config
+          echo "=== SSH config ==="
+          cat ~/.ssh/config
+          echo "=== known_hosts ==="
+          cat ~/.ssh/known_hosts
+          echo "=== ssh -v test ==="
+          ssh -vT -o BatchMode=yes aur@aur.archlinux.org 2>&1 | head -30
 
           git clone ssh://aur@aur.archlinux.org/zedg.git /tmp/aur-pkg
           cp packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO /tmp/aur-pkg/
