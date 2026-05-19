@@ -145,11 +145,7 @@ jobs:
           echo "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur
           chmod 600 ~/.ssh/aur
           echo "aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuFEqC052YzKGXRBz5GVBrKqFk7pVEbfYJ5VDdeXwOd" >> ~/.ssh/known_hosts
-          cat > ~/.ssh/config <<CFG
-          Host aur.archlinux.org
-            IdentityFile ~/.ssh/aur
-            User aur
-          CFG
+          printf 'Host aur.archlinux.org\n  IdentityFile ~/.ssh/aur\n  User aur\n' > ~/.ssh/config
           chmod 600 ~/.ssh/config
 
           git clone ssh://aur@aur.archlinux.org/zedg.git /tmp/aur-pkg
