@@ -76,10 +76,10 @@ jobs:
           sed -i "s/sha256sums_x86_64=('.*')/sha256sums_x86_64=('$X86_SUM')/" packaging/archlinux/PKGBUILD
           sed -i "s/sha256sums_aarch64=('.*')/sha256sums_aarch64=('$AARCH64_SUM')/" packaging/archlinux/PKGBUILD
 
-          # 用 makepkg 生成 .SRCINFO
-          cd packaging/archlinux
-          makepkg --printsrcinfo > .SRCINFO
-          cd ../..
+          # 用 makepkg 生成 .SRCINFO（不能以 root 运行）
+          useradd -m builder
+          chown -R builder:builder packaging/archlinux
+          su builder -c "cd packaging/archlinux && makepkg --printsrcinfo > .SRCINFO"
 
           # 提交打包文件更新
           git config user.name "github-actions[bot]"
