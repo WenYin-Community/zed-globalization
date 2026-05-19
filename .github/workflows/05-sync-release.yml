@@ -70,9 +70,10 @@ jobs:
         run: |
           VER="${VERSION#v}"
           sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr.spec
+          sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr-aarch64.spec
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add packaging/rpm/zedg-copr.spec
+          git add packaging/rpm/zedg-copr.spec packaging/rpm/zedg-copr-aarch64.spec
           git diff --cached --quiet || git commit -m "chore(rpm): 更新 spec 版本号至 $VER"
           git push
 
@@ -99,4 +100,12 @@ jobs:
           copr_url = https://copr.fedorainfracloud.org
           CFG
 
-          copr-cli build --nowait ruojiner/zedg packaging/rpm/zedg-copr.spec
+          # x86_64 构建 (fedora-44/43 x86_64 + rhel-10 x86_64)
+          copr-cli build --nowait \
+            -r fedora-44-x86_64 -r fedora-43-x86_64 -r rhel-10-x86_64 \
+            ruojiner/zedg packaging/rpm/zedg-copr.spec
+
+          # aarch64 构建 (fedora-44/43 aarch64 + rhel-10 aarch64)
+          copr-cli build --nowait \
+            -r fedora-44-aarch64 -r fedora-43-aarch64 -r rhel-10-aarch64 \
+            ruojiner/zedg packaging/rpm/zedg-copr-aarch64.spec
