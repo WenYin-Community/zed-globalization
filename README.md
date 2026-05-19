@@ -5,6 +5,7 @@
 [![license][license-image]][license-url]
 
 > **⚠️ 说明：** 本仓库仅用于 COPR 和 AUR 打包推送。下载二进制安装包请访问上游仓库：[x6nux/zed-globalization Releases](https://github.com/x6nux/zed-globalization/releases/latest)
+> 每 3 天自动检测上游新版本并同步打包。
 
 ### COPR (Fedora/RHEL)
 
