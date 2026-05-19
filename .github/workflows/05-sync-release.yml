@@ -134,6 +134,7 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         env:
           AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          GIT_SSH_COMMAND: "ssh -i ~/.ssh/aur -o StrictHostKeyChecking=accept-new"
         run: |
           if [ -z "$AUR_SSH_PRIVATE_KEY" ]; then
             echo "未配置 AUR_SSH_PRIVATE_KEY，跳过 AUR 推送"
@@ -144,9 +145,6 @@ jobs:
           chmod 700 ~/.ssh
           echo "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur
           chmod 600 ~/.ssh/aur
-          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts 2>/dev/null
-          printf 'Host aur.archlinux.org\n  IdentityFile ~/.ssh/aur\n  User aur\n' > ~/.ssh/config
-          chmod 600 ~/.ssh/config
 
           git clone ssh://aur@aur.archlinux.org/zedg.git /tmp/aur-pkg
           cp packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO /tmp/aur-pkg/
