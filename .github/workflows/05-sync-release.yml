@@ -1,0 +1,102 @@
+name: 05 同步上游二进制包并触发 COPR 构建
+
+on:
+  schedule:
+    - cron: "0 1 */3 * *"  # 每3天同步一次
+  workflow_dispatch:
+
+concurrency:
+  group: sync-release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_REPO: x6nux/zed-globalization
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检测上游最新版本
+        id: check
+        run: |
+          LATEST=$(curl -sf "https://api.github.com/repos/${{ env.UPSTREAM_REPO }}/releases/latest" | jq -r '.tag_name')
+          echo "上游最新版本: $LATEST"
+
+          # 获取本地最新 release tag
+          LOCAL=$(curl -sf "https://api.github.com/repos/${{ github.repository }}/releases?per_page=1" | jq -r '.[0].tag_name // empty')
+          echo "本地最新版本: ${LOCAL:-无}"
+
+          if [ "$LATEST" = "$LOCAL" ]; then
+            echo "版本相同，无需同步"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "需要同步: $LOCAL -> $LATEST"
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "version=$LATEST" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 下载上游 tar.gz 并上传到本仓库 Release
+        if: steps.check.outputs.skip != 'true'
+        env:
+          VERSION: ${{ steps.check.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p assets
+
+          # 下载 x86_64 和 aarch64 tar.gz
+          for arch in x86_64 aarch64; do
+            FILE="zedg-zh-cn-linux-${arch}-${VERSION}.tar.gz"
+            URL="https://github.com/${{ env.UPSTREAM_REPO }}/releases/download/${VERSION}/${FILE}"
+            echo "下载: $URL"
+            curl -fSL "$URL" -o "assets/${FILE}"
+          done
+
+          # 创建 Release 并上传资产
+          gh release create "$VERSION" \
+            --repo "${{ github.repository }}" \
+            --title "ZedG $VERSION" \
+            --notes "Synced from ${{ env.UPSTREAM_REPO }} $VERSION" \
+            assets/*.tar.gz
+
+      - name: 更新 spec 版本号并推送
+        if: steps.check.outputs.skip != 'true'
+        env:
+          VERSION: ${{ steps.check.outputs.version }}
+        run: |
+          VER="${VERSION#v}"
+          sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr.spec
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add packaging/rpm/zedg-copr.spec
+          git diff --cached --quiet || git commit -m "chore(rpm): 更新 spec 版本号至 $VER"
+          git push
+
+      - name: 触发 COPR 构建
+        if: steps.check.outputs.skip != 'true'
+        env:
+          COPR_LOGIN: ${{ secrets.COPR_LOGIN }}
+          COPR_TOKEN: ${{ secrets.COPR_TOKEN }}
+          COPR_USERNAME: ${{ secrets.COPR_USERNAME }}
+        run: |
+          if [ -z "$COPR_TOKEN" ]; then
+            echo "未配置 COPR_TOKEN，跳过 COPR 构建触发"
+            exit 0
+          fi
+
+          pip install copr-cli
+
+          mkdir -p ~/.config
+          cat > ~/.config/copr <<CFG
+          [copr-cli]
+          username = ${COPR_USERNAME:-ruojiner}
+          login = $COPR_LOGIN
+          token = $COPR_TOKEN
+          copr_url = https://copr.fedorainfracloud.org
+          CFG
+
+          copr-cli build --nowait ruojiner/zedg packaging/rpm/zedg-copr.spec
