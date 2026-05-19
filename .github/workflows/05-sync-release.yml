@@ -78,8 +78,11 @@ jobs:
 
           # 用 makepkg 生成 .SRCINFO（不能以 root 运行）
           useradd -m builder
-          chown -R builder:builder packaging/archlinux
-          sudo -u builder makepkg --printsrcinfo > packaging/archlinux/.SRCINFO
+          TMPDIR=$(mktemp -d)
+          cp packaging/archlinux/PKGBUILD "$TMPDIR/"
+          chown -R builder:builder "$TMPDIR"
+          sudo -u builder sh -c "cd $TMPDIR && makepkg --printsrcinfo" > packaging/archlinux/.SRCINFO
+          rm -rf "$TMPDIR"
 
           # 提交打包文件更新
           git config user.name "github-actions[bot]"
