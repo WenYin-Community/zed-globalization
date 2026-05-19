@@ -1,4 +1,4 @@
-name: 05 同步上游二进制包并触发 COPR 构建
+name: 05 同步上游二进制包并触发 COPR/AUR 构建
 
 on:
   schedule:
@@ -18,7 +18,11 @@ env:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    container: archlinux:latest
     steps:
+      - name: 安装基础工具
+        run: pacman -Syu --noconfirm base-devel git jq curl openssh github-cli python-pip nodejs
+
       - uses: actions/checkout@v4
 
       - name: 检测上游最新版本
@@ -27,7 +31,6 @@ jobs:
           LATEST=$(curl -sf "https://api.github.com/repos/${{ env.UPSTREAM_REPO }}/releases/latest" | jq -r '.tag_name')
           echo "上游最新版本: $LATEST"
 
-          # 获取本地最新 release tag
           LOCAL=$(curl -sf "https://api.github.com/repos/${{ github.repository }}/releases?per_page=1" | jq -r '.[0].tag_name // empty')
           echo "本地最新版本: ${LOCAL:-无}"
 
@@ -46,9 +49,9 @@ jobs:
           VERSION: ${{ steps.check.outputs.version }}
           GH_TOKEN: ${{ github.token }}
         run: |
+          VER="${VERSION#v}"
           mkdir -p assets
 
-          # 下载 x86_64 和 aarch64 tar.gz
           for arch in x86_64 aarch64; do
             FILE="zedg-zh-cn-linux-${arch}-${VERSION}.tar.gz"
             URL="https://github.com/${{ env.UPSTREAM_REPO }}/releases/download/${VERSION}/${FILE}"
@@ -56,29 +59,28 @@ jobs:
             curl -fSL "$URL" -o "assets/${FILE}"
           done
 
-          # 创建 Release 并上传资产
           gh release create "$VERSION" \
             --repo "${{ github.repository }}" \
             --title "ZedG $VERSION" \
             --notes "Synced from ${{ env.UPSTREAM_REPO }} $VERSION" \
             assets/*.tar.gz
 
-      - name: 更新打包文件版本号并推送
-        if: steps.check.outputs.skip != 'true'
-        env:
-          VERSION: ${{ steps.check.outputs.version }}
-        run: |
-          VER="${VERSION#v}"
-          # RPM spec
+          # 更新打包文件版本号
           sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr.spec
           sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr-aarch64.spec
-          # Arch PKGBUILD（.SRCINFO 推送 AUR 前手动 makepkg --printsrcinfo 生成）
           sed -i "s/^pkgver=.*/pkgver=$VER/" packaging/archlinux/PKGBUILD
+
           X86_SUM=$(sha256sum "assets/zedg-zh-cn-linux-x86_64-${VERSION}.tar.gz" | awk '{print $1}')
           AARCH64_SUM=$(sha256sum "assets/zedg-zh-cn-linux-aarch64-${VERSION}.tar.gz" | awk '{print $1}')
           sed -i "s/sha256sums_x86_64=('.*')/sha256sums_x86_64=('$X86_SUM')/" packaging/archlinux/PKGBUILD
           sed -i "s/sha256sums_aarch64=('.*')/sha256sums_aarch64=('$AARCH64_SUM')/" packaging/archlinux/PKGBUILD
 
+          # 用 makepkg 生成 .SRCINFO
+          cd packaging/archlinux
+          makepkg --printsrcinfo > .SRCINFO
+          cd ../..
+
+          # 提交打包文件更新
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add packaging/rpm/zedg-copr.spec packaging/rpm/zedg-copr-aarch64.spec packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO
@@ -97,7 +99,7 @@ jobs:
             exit 0
           fi
 
-          pip install copr-cli
+          pip install --break-system-packages copr-cli
 
           mkdir -p ~/.config
           cat > ~/.config/copr <<CFG
@@ -108,12 +110,34 @@ jobs:
           copr_url = https://copr.fedorainfracloud.org
           CFG
 
-          # x86_64 构建 (fedora-44/43 x86_64 + rhel-10 x86_64)
           copr-cli build --nowait \
             -r fedora-44-x86_64 -r fedora-43-x86_64 -r rhel-10-x86_64 \
             ruojiner/zedg packaging/rpm/zedg-copr.spec
 
-          # aarch64 构建 (fedora-44/43 aarch64 + rhel-10 aarch64)
           copr-cli build --nowait \
             -r fedora-44-aarch64 -r fedora-43-aarch64 -r rhel-10-aarch64 \
             ruojiner/zedg packaging/rpm/zedg-copr-aarch64.spec
+
+      - name: 推送到 AUR
+        if: steps.check.outputs.skip != 'true'
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          if [ -z "$AUR_SSH_PRIVATE_KEY" ]; then
+            echo "未配置 AUR_SSH_PRIVATE_KEY，跳过 AUR 推送"
+            exit 0
+          fi
+
+          mkdir -p ~/.ssh
+          echo "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur
+          chmod 600 ~/.ssh/aur
+          echo "aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuFEqC052YzKGXRBz5GVBrKqFk7pVEbfYJ5VDdeXwOd" >> ~/.ssh/known_hosts
+
+          git clone ssh://aur@aur.archlinux.org/zedg.git /tmp/aur-pkg
+          cp packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO /tmp/aur-pkg/
+          cd /tmp/aur-pkg
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add PKGBUILD .SRCINFO
+          git diff --cached --quiet || git commit -m "Update to ${{ steps.check.outputs.version }}"
+          git push
