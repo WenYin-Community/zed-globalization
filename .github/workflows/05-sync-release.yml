@@ -91,6 +91,7 @@ jobs:
         env:
           VERSION: ${{ steps.check.outputs.version }}
         run: |
+          cd "${GITHUB_WORKSPACE}"
           VER="${VERSION#v}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
