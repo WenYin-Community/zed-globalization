@@ -129,3 +129,30 @@ jobs:
           copr-cli build --nowait \
             -r fedora-44-aarch64 -r fedora-43-aarch64 -r rhel-10-aarch64 \
             ruojiner/zedg packaging/rpm/zedg-copr-aarch64.spec
+
+      - name: 推送到 AUR
+        if: steps.check.outputs.skip != 'true'
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          if [ -z "$AUR_SSH_PRIVATE_KEY" ]; then
+            echo "未配置 AUR_SSH_PRIVATE_KEY，跳过 AUR 推送"
+            exit 0
+          fi
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur
+          chmod 600 ~/.ssh/aur
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts 2>/dev/null
+          printf 'Host aur.archlinux.org\n  IdentityFile ~/.ssh/aur\n  User aur\n' > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+          git clone ssh://aur@aur.archlinux.org/zedg.git /tmp/aur-pkg
+          cp packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO /tmp/aur-pkg/
+          cd /tmp/aur-pkg
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add PKGBUILD .SRCINFO
+          git diff --cached --quiet || git commit -m "Update to ${{ steps.check.outputs.version }}"
+          git push
