@@ -54,12 +54,10 @@ jobs:
           VER="${VERSION#v}"
           mkdir -p assets
 
-          for arch in x86_64 aarch64; do
-            FILE="zedg-zh-cn-linux-${arch}-${VERSION}.tar.gz"
-            URL="https://github.com/${{ env.UPSTREAM_REPO }}/releases/download/${VERSION}/${FILE}"
-            echo "下载: $URL"
-            curl -fSL "$URL" -o "assets/${FILE}"
-          done
+          FILE="zedg-zh-cn-linux-x86_64-${VERSION}.tar.gz"
+          URL="https://github.com/${{ env.UPSTREAM_REPO }}/releases/download/${VERSION}/${FILE}"
+          echo "下载: $URL"
+          curl -fSL "$URL" -o "assets/${FILE}"
 
           if gh release view "$VERSION" --repo "${{ github.repository }}" &>/dev/null; then
             echo "Release $VERSION 已存在，跳过创建"
@@ -73,13 +71,10 @@ jobs:
 
           # 更新打包文件版本号
           sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr.spec
-          sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr-aarch64.spec
           sed -i "s/^pkgver=.*/pkgver=$VER/" packaging/archlinux/PKGBUILD
 
           X86_SUM=$(sha256sum "assets/zedg-zh-cn-linux-x86_64-${VERSION}.tar.gz" | awk '{print $1}')
-          AARCH64_SUM=$(sha256sum "assets/zedg-zh-cn-linux-aarch64-${VERSION}.tar.gz" | awk '{print $1}')
           sed -i "s/sha256sums_x86_64=('.*')/sha256sums_x86_64=('$X86_SUM')/" packaging/archlinux/PKGBUILD
-          sed -i "s/sha256sums_aarch64=('.*')/sha256sums_aarch64=('$AARCH64_SUM')/" packaging/archlinux/PKGBUILD
 
       - name: 生成 .SRCINFO
         if: steps.check.outputs.skip != 'true'
@@ -99,7 +94,7 @@ jobs:
           VER="${VERSION#v}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add packaging/rpm/zedg-copr.spec packaging/rpm/zedg-copr-aarch64.spec packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO
+          git add packaging/rpm/zedg-copr.spec packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO
           git diff --cached --quiet || git commit -m "chore: 更新打包文件版本号至 $VER"
           git push
 
@@ -129,10 +124,6 @@ jobs:
           copr-cli build --nowait \
             -r fedora-44-x86_64 -r fedora-43-x86_64 -r rhel-10-x86_64 \
             ruojiner/zedg packaging/rpm/zedg-copr.spec
-
-          copr-cli build --nowait \
-            -r fedora-44-aarch64 -r fedora-43-aarch64 -r rhel-10-aarch64 \
-            ruojiner/zedg packaging/rpm/zedg-copr-aarch64.spec
 
       - name: 推送到 AUR
         if: steps.check.outputs.skip != 'true'

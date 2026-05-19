@@ -8,7 +8,6 @@ URL:            https://github.com/WenYin-Community/zed-globalization
 Source0:        https://github.com/WenYin-Community/zed-globalization/releases/download/v%{version}/zedg-zh-cn-linux-x86_64-v%{version}.tar.gz
 
 AutoReqProv:    no
-BuildArch:      x86_64
 
 %description
 A high-performance, multiplayer code editor with globalization support.
