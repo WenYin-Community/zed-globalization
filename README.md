@@ -115,13 +115,34 @@ scoop install zedg-preview
 ## 自动化流水线
 
 ```
-01-translate (定时/手动)   扫描 Zed 新版本，提取并翻译字符串
-       |
-02-build                   三平台编译 + patch_agent_env 补丁，生成 Release
-       |
-       ├── 03-update-scoop      更新 Scoop Manifest
-       └── 04-update-homebrew   更新 Homebrew Cask
+05-sync-release (定时/手动)   检测上游新版本 → 同步 tar.gz → 更新打包文件 → 触发 COPR 构建 → 推送 AUR
 ```
+
+## 打包说明
+
+### COPR (Fedora/RHEL)
+
+- **架构支持**：仅支持 x86_64（COPR dist-git 系统对同一包名只保留一个 spec 文件，无法同时支持多架构）
+- **构建触发**：由 workflow 自动触发，无需手动操作
+- **安装方式**：
+  ```bash
+  # 启用 COPR 仓库
+  dnf copr enable ruojiner/zedg
+  # 安装
+  dnf install zedg
+  ```
+
+### AUR (Arch Linux)
+
+- **架构支持**：支持 x86_64 和 aarch64（通过 PKGBUILD 的 `source_x86_64`/`source_aarch64` 分别指定）
+- **构建触发**：由 workflow 自动推送到 AUR
+- **安装方式**：
+  ```bash
+  # 使用 yay
+  yay -S zedg
+  # 或使用 paru
+  paru -S zedg
+  ```
 
 ## 本地使用
 
