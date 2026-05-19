@@ -6,6 +6,30 @@
 
 > **⚠️ 说明：** 本仓库仅用于 COPR 和 AUR 打包推送。下载二进制安装包请访问上游仓库：[x6nux/zed-globalization Releases](https://github.com/x6nux/zed-globalization/releases/latest)
 
+### COPR (Fedora/RHEL)
+
+- **架构支持**：仅支持 x86_64（COPR dist-git 系统对同一包名只保留一个 spec 文件，无法同时支持多架构）
+- **构建触发**：由 workflow 自动触发，无需手动操作
+- **安装方式**：
+  ```bash
+  # 启用 COPR 仓库
+  dnf copr enable ruojiner/zedg
+  # 安装
+  dnf install zedg
+  ```
+
+### AUR (Arch Linux)
+
+- **架构支持**：支持 x86_64 和 aarch64（通过 PKGBUILD 的 `source_x86_64`/`source_aarch64` 分别指定）
+- **构建触发**：由 workflow 自动推送到 AUR
+- **安装方式**：
+  ```bash
+  # 使用 yay
+  yay -S zedg
+  # 或使用 paru
+  paru -S zedg
+  ```
+
 [Zed 编辑器](https://github.com/zed-industries/zed) 汉化版（中文版），支持简体中文、繁体中文、日语、韩语等多语言。AI 驱动的全自动翻译与构建流水线，开箱即用。
 
 ## Star History
@@ -117,32 +141,6 @@ scoop install zedg-preview
 ```
 05-sync-release (定时/手动)   检测上游新版本 → 同步 tar.gz → 更新打包文件 → 触发 COPR 构建 → 推送 AUR
 ```
-
-## 打包说明
-
-### COPR (Fedora/RHEL)
-
-- **架构支持**：仅支持 x86_64（COPR dist-git 系统对同一包名只保留一个 spec 文件，无法同时支持多架构）
-- **构建触发**：由 workflow 自动触发，无需手动操作
-- **安装方式**：
-  ```bash
-  # 启用 COPR 仓库
-  dnf copr enable ruojiner/zedg
-  # 安装
-  dnf install zedg
-  ```
-
-### AUR (Arch Linux)
-
-- **架构支持**：支持 x86_64 和 aarch64（通过 PKGBUILD 的 `source_x86_64`/`source_aarch64` 分别指定）
-- **构建触发**：由 workflow 自动推送到 AUR
-- **安装方式**：
-  ```bash
-  # 使用 yay
-  yay -S zedg
-  # 或使用 paru
-  paru -S zedg
-  ```
 
 ## 本地使用
 
