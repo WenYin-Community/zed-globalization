@@ -76,15 +76,22 @@ jobs:
           sed -i "s/sha256sums_x86_64=('.*')/sha256sums_x86_64=('$X86_SUM')/" packaging/archlinux/PKGBUILD
           sed -i "s/sha256sums_aarch64=('.*')/sha256sums_aarch64=('$AARCH64_SUM')/" packaging/archlinux/PKGBUILD
 
-          # 用 makepkg 生成 .SRCINFO（不能以 root 运行）
+      - name: 生成 .SRCINFO
+        if: steps.check.outputs.skip != 'true'
+        run: |
           useradd -m builder
           BUILDDIR=$(mktemp -d)
           cp packaging/archlinux/PKGBUILD "$BUILDDIR/"
           chown -R builder:builder "$BUILDDIR"
-          (cd "$BUILDDIR" && sudo -u builder makepkg --printsrcinfo) > packaging/archlinux/.SRCINFO
+          sudo -u builder sh -c "cd $BUILDDIR && makepkg --printsrcinfo" > packaging/archlinux/.SRCINFO
           rm -rf "$BUILDDIR"
 
-          # 提交打包文件更新
+      - name: 提交打包文件更新
+        if: steps.check.outputs.skip != 'true'
+        env:
+          VERSION: ${{ steps.check.outputs.version }}
+        run: |
+          VER="${VERSION#v}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add packaging/rpm/zedg-copr.spec packaging/rpm/zedg-copr-aarch64.spec packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO
