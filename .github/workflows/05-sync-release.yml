@@ -81,7 +81,7 @@ jobs:
           BUILDDIR=$(mktemp -d)
           cp packaging/archlinux/PKGBUILD "$BUILDDIR/"
           chown -R builder:builder "$BUILDDIR"
-          sudo -u builder env -C "$BUILDDIR" makepkg --printsrcinfo > packaging/archlinux/.SRCINFO
+          (cd "$BUILDDIR" && sudo -u builder makepkg --printsrcinfo) > packaging/archlinux/.SRCINFO
           rm -rf "$BUILDDIR"
 
           # 提交打包文件更新
