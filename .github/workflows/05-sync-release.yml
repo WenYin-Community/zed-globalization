@@ -1,4 +1,4 @@
-name: 05 同步上游二进制包并触发 COPR/AUR 构建
+name: 05 同步上游二进制包并触发 COPR 构建
 
 on:
   schedule:
@@ -36,10 +36,14 @@ jobs:
           LOCAL=$(curl -sf "https://api.github.com/repos/${{ github.repository }}/releases?per_page=1" | jq -r '.[0].tag_name // empty')
           echo "本地最新版本: ${LOCAL:-无}"
 
-          # 临时：强制执行同步步骤以测试 COPR/AUR
-          echo "强制同步模式"
-          echo "skip=false" >> $GITHUB_OUTPUT
-          echo "version=$LATEST" >> $GITHUB_OUTPUT
+          if [ "$LATEST" = "$LOCAL" ]; then
+            echo "版本相同，无需同步"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "需要同步: $LOCAL -> $LATEST"
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "version=$LATEST" >> $GITHUB_OUTPUT
+          fi
 
       - name: 下载上游 tar.gz 并上传到本仓库 Release
         if: steps.check.outputs.skip != 'true'
@@ -57,16 +61,11 @@ jobs:
             curl -fSL "$URL" -o "assets/${FILE}"
           done
 
-          # 临时：Release 已存在则跳过创建
-          if gh release view "$VERSION" --repo "${{ github.repository }}" &>/dev/null; then
-            echo "Release $VERSION 已存在，跳过创建"
-          else
-            gh release create "$VERSION" \
-              --repo "${{ github.repository }}" \
-              --title "ZedG $VERSION" \
-              --notes "Synced from ${{ env.UPSTREAM_REPO }} $VERSION" \
-              assets/*.tar.gz
-          fi
+          gh release create "$VERSION" \
+            --repo "${{ github.repository }}" \
+            --title "ZedG $VERSION" \
+            --notes "Synced from ${{ env.UPSTREAM_REPO }} $VERSION" \
+            assets/*.tar.gz
 
           # 更新打包文件版本号
           sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr.spec
@@ -130,36 +129,3 @@ jobs:
           copr-cli build --nowait \
             -r fedora-44-aarch64 -r fedora-43-aarch64 -r rhel-10-aarch64 \
             ruojiner/zedg packaging/rpm/zedg-copr-aarch64.spec
-
-      - name: 推送到 AUR
-        if: steps.check.outputs.skip != 'true'
-        env:
-          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-        run: |
-          if [ -z "$AUR_SSH_PRIVATE_KEY" ]; then
-            echo "未配置 AUR_SSH_PRIVATE_KEY，跳过 AUR 推送"
-            exit 0
-          fi
-
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur
-          chmod 600 ~/.ssh/aur
-          echo "aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuFEqC052YzKGXRBz5GVBrKqFk7pVEbfYJ5VDdeXwOd" >> ~/.ssh/known_hosts
-          printf 'Host aur.archlinux.org\n  IdentityFile ~/.ssh/aur\n  User aur\n' > ~/.ssh/config
-          chmod 600 ~/.ssh/config
-          echo "=== SSH config ==="
-          cat ~/.ssh/config
-          echo "=== known_hosts ==="
-          cat ~/.ssh/known_hosts
-          echo "=== ssh -v test ==="
-          ssh -vT -o BatchMode=yes aur@aur.archlinux.org 2>&1 | head -30
-
-          git clone ssh://aur@aur.archlinux.org/zedg.git /tmp/aur-pkg
-          cp packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO /tmp/aur-pkg/
-          cd /tmp/aur-pkg
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add PKGBUILD .SRCINFO
-          git diff --cached --quiet || git commit -m "Update to ${{ steps.check.outputs.version }}"
-          git push
