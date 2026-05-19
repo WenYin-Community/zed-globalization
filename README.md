@@ -4,6 +4,8 @@
 [![Github Downloads][download-image]][download-url]
 [![license][license-image]][license-url]
 
+> **⚠️ 说明：** 本仓库仅用于 COPR 和 AUR 打包推送。下载二进制安装包请访问上游仓库：[x6nux/zed-globalization Releases](https://github.com/x6nux/zed-globalization/releases/latest)
+
 [Zed 编辑器](https://github.com/zed-industries/zed) 汉化版（中文版），支持简体中文、繁体中文、日语、韩语等多语言。AI 驱动的全自动翻译与构建流水线，开箱即用。
 
 ## Star History
