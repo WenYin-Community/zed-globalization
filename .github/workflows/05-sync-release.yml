@@ -112,7 +112,7 @@ jobs:
             exit 0
           fi
 
-          pip install --break-system-packages copr-cli
+          pip install --break-system-packages copr-cli rich
 
           mkdir -p ~/.config
           cat > ~/.config/copr <<CFG
