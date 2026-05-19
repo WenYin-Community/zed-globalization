@@ -21,7 +21,9 @@ jobs:
     container: archlinux:latest
     steps:
       - name: 安装基础工具
-        run: pacman -Syu --noconfirm base-devel git jq curl openssh github-cli python-pip nodejs
+        run: |
+          pacman -Syu --noconfirm base-devel git jq curl openssh github-cli python-pip nodejs
+          git config --global --add safe.directory /__w/zed-globalization/zed-globalization
 
       - uses: actions/checkout@v4
 
@@ -91,10 +93,6 @@ jobs:
         env:
           VERSION: ${{ steps.check.outputs.version }}
         run: |
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          echo "pwd=$(pwd)"
-          ls -la .git 2>&1 || true
-          git status 2>&1 || true
           VER="${VERSION#v}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
