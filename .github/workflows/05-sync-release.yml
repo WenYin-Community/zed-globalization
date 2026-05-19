@@ -63,18 +63,26 @@ jobs:
             --notes "Synced from ${{ env.UPSTREAM_REPO }} $VERSION" \
             assets/*.tar.gz
 
-      - name: 更新 spec 版本号并推送
+      - name: 更新打包文件版本号并推送
         if: steps.check.outputs.skip != 'true'
         env:
           VERSION: ${{ steps.check.outputs.version }}
         run: |
           VER="${VERSION#v}"
+          # RPM spec
           sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr.spec
           sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr-aarch64.spec
+          # Arch PKGBUILD（.SRCINFO 推送 AUR 前手动 makepkg --printsrcinfo 生成）
+          sed -i "s/^pkgver=.*/pkgver=$VER/" packaging/archlinux/PKGBUILD
+          X86_SUM=$(sha256sum "assets/zedg-zh-cn-linux-x86_64-${VERSION}.tar.gz" | awk '{print $1}')
+          AARCH64_SUM=$(sha256sum "assets/zedg-zh-cn-linux-aarch64-${VERSION}.tar.gz" | awk '{print $1}')
+          sed -i "s/sha256sums_x86_64=('.*')/sha256sums_x86_64=('$X86_SUM')/" packaging/archlinux/PKGBUILD
+          sed -i "s/sha256sums_aarch64=('.*')/sha256sums_aarch64=('$AARCH64_SUM')/" packaging/archlinux/PKGBUILD
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add packaging/rpm/zedg-copr.spec packaging/rpm/zedg-copr-aarch64.spec
-          git diff --cached --quiet || git commit -m "chore(rpm): 更新 spec 版本号至 $VER"
+          git add packaging/rpm/zedg-copr.spec packaging/rpm/zedg-copr-aarch64.spec packaging/archlinux/PKGBUILD packaging/archlinux/.SRCINFO
+          git diff --cached --quiet || git commit -m "chore: 更新打包文件版本号至 $VER"
           git push
 
       - name: 触发 COPR 构建
