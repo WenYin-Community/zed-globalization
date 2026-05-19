@@ -45,3 +45,15 @@ scan_files.json
 scan_result.json
 config/do_not_translate.json
 i18n/
+
+# 构建产物
+target/
+
+# 工具生成目录
+.spec-workflow/
+
+# 日志
+*.log
+
+# macOS
+.DS_Store
