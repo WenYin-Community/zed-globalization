@@ -54,10 +54,12 @@ jobs:
           VER="${VERSION#v}"
           mkdir -p assets
 
-          FILE="zedg-zh-cn-linux-x86_64-${VERSION}.tar.gz"
-          URL="https://github.com/${{ env.UPSTREAM_REPO }}/releases/download/${VERSION}/${FILE}"
-          echo "下载: $URL"
-          curl -fSL "$URL" -o "assets/${FILE}"
+          for arch in x86_64 aarch64; do
+            FILE="zedg-zh-cn-linux-${arch}-${VERSION}.tar.gz"
+            URL="https://github.com/${{ env.UPSTREAM_REPO }}/releases/download/${VERSION}/${FILE}"
+            echo "下载: $URL"
+            curl -fSL "$URL" -o "assets/${FILE}"
+          done
 
           if gh release view "$VERSION" --repo "${{ github.repository }}" &>/dev/null; then
             echo "Release $VERSION 已存在，跳过创建"
@@ -74,7 +76,9 @@ jobs:
           sed -i "s/^pkgver=.*/pkgver=$VER/" packaging/archlinux/PKGBUILD
 
           X86_SUM=$(sha256sum "assets/zedg-zh-cn-linux-x86_64-${VERSION}.tar.gz" | awk '{print $1}')
+          AARCH64_SUM=$(sha256sum "assets/zedg-zh-cn-linux-aarch64-${VERSION}.tar.gz" | awk '{print $1}')
           sed -i "s/sha256sums_x86_64=('.*')/sha256sums_x86_64=('$X86_SUM')/" packaging/archlinux/PKGBUILD
+          sed -i "s/sha256sums_aarch64=('.*')/sha256sums_aarch64=('$AARCH64_SUM')/" packaging/archlinux/PKGBUILD
 
       - name: 生成 .SRCINFO
         if: steps.check.outputs.skip != 'true'
