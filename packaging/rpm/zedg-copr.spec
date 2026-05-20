@@ -19,6 +19,7 @@ tar -xzf %{SOURCE0} -C %{buildroot}
 
 %files
 %attr(755, root, root) /usr/bin/zedg
+%attr(755, root, root) /usr/libexec/zedg
 /usr/share/applications/zedg.desktop
 /usr/share/icons/hicolor/512x512/apps/zedg.png
 /usr/share/icons/hicolor/1024x1024/apps/zedg.png
