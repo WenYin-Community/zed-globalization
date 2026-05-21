@@ -140,7 +140,7 @@ scoop install zedg-preview
 ## 自动化流水线
 
 ```
-05-sync-release (定时/手动)   检测上游新版本 → 同步 tar.gz → 更新打包文件 → 触发 COPR 构建 → 推送 AUR
+05-sync-release (每天定时/手动)  检测上游新版本 → 同步 tar.gz → 更新打包文件 → 触发 COPR 构建 → 推送 AUR
 ```
 
 ## 本地使用
