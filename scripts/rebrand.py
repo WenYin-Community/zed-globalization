@@ -453,6 +453,17 @@ def patch_zed_sh(zed_dir: Path, *, dry_run: bool = False) -> None:
     apply_replacements(path, replacements, dry_run=dry_run, description="zed.sh WSL bridge")
 
 
+def patch_cli_windows_bundle_detection(zed_dir: Path, *, dry_run: bool = False) -> None:
+    """Patch Windows CLI bundle detection to find ZedG.exe instead of Zed.exe."""
+    path = zed_dir / "crates" / "cli" / "src" / "main.rs"
+    apply_replacements(
+        path,
+        [('let possible_locations = ["../Zed.exe",', 'let possible_locations = ["../ZedG.exe",')],
+        dry_run=dry_run,
+        description="Windows CLI bundle detection",
+    )
+
+
 def patch_bundle_windows(zed_dir: Path, *, dry_run: bool = False) -> None:
     """Patch script/bundle-windows.ps1."""
     path = zed_dir / "script" / "bundle-windows.ps1"
@@ -551,6 +562,7 @@ def apply_category_6(zed_dir: Path, *, dry_run: bool = False) -> None:
     patch_zed_iss(zed_dir, dry_run=dry_run)
     patch_zed_sh(zed_dir, dry_run=dry_run)
     patch_bundle_windows(zed_dir, dry_run=dry_run)
+    patch_cli_windows_bundle_detection(zed_dir, dry_run=dry_run)
 
 
 # ---------------------------------------------------------------------------
