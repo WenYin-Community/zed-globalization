@@ -1,5 +1,5 @@
 Name:           zedg
-Version:        1.5.5
+Version:        1.6.3
 Release:        1%{?dist}
 Summary:        Zed editor with globalization support
 License:        AGPL-3.0-or-later AND Apache-2.0 AND GPL-3.0-or-later
