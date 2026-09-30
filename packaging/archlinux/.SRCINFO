@@ -1,7 +1,7 @@
 pkgbase = zedg
 	pkgdesc = Zed editor with globalization support (pre-built binary)
 	pkgver = 1.21.0
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/WenYin-Community/zed-globalization
 	arch = x86_64
 	arch = aarch64
