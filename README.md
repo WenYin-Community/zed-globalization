@@ -5,7 +5,7 @@
 [![license][license-image]][license-url]
 
 > **⚠️ 说明：** 本仓库仅用于 COPR 和 AUR 打包推送。Release 页面只放打包所需的 `tar.gz` 源文件（从 [wenyinos/ZedG](https://github.com/wenyinos/ZedG/releases/latest) 镜像备份），其他平台安装包请访问上游仓库。
-> 每 1 天自动检测上游新版本并同步打包。
+> 每 1 天自动检测上游新版本并同步打包。全部历史版本资产与校验和见 [RELEASES.md](RELEASES.md)。
 
 ### COPR (Fedora/RHEL)
 
