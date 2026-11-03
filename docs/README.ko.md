@@ -1,4 +1,4 @@
-# Zed Globalization
+# ZedG — Zed 편집기 중국어 간체 버전
 
 [![GitHub stars][stars-image]][stars-url]
 [![Github Downloads][download-image]][download-url]
@@ -6,68 +6,13 @@
 
 [简体中文](../README.md)|[English](README.en.md)|[日本語](README.ja.md)|**한국어**
 
-[Zed 편집기](https://github.com/zed-industries/zed) 다국어 현지화 도구 체인. AI 기반의 완전 자동 번역 및 빌드 파이프라인.
+[Zed 편집기](https://github.com/zed-industries/zed)의 중국어 간체 버전(현재 `zh-CN`만 배포). AI 기반의 완전 자동 번역 및 빌드 파이프라인: 업스트림 릴리스에서 번역 대상 문자열을 추출하고, AI로 번역한 뒤 소스를 치환하여 다시 빌드합니다.
 
-## 다운로드
-
-[Releases](https://github.com/x6nux/zed-globalization/releases/latest)에서 빌드된 바이너리를 다운로드:
-
-| 플랫폼 | 파일 | 설치 방법 |
-|--------|------|----------|
-| macOS (Universal) | `zedg-zh-cn-macos-universal-*.dmg` | `brew tap x6nux/zedg && brew install --cask zedg` ([자세히](#macos-설치)) |
-| macOS (Apple Silicon) | `zedg-zh-cn-macos-aarch64-*.dmg` | DMG 수동 설치 |
-| macOS (Intel) | `zedg-zh-cn-macos-x86_64-*.dmg` | DMG 수동 설치 |
-| Windows (x64) | `zedg-zh-cn-windows-x86_64-*.zip` | `scoop install zedg` ([자세히](#windows-scoop)) |
-| Windows (ARM64) | `zedg-zh-cn-windows-aarch64-*.zip` | 압축 해제 후 `ZedG.exe` 실행 |
-| Linux (x64) | `zedg-zh-cn-linux-x86_64-*.tar.gz` | `/usr/local`에 압축 해제 |
-| Linux (x64 deb) | `zedg-zh-cn-linux-x86_64-*.deb` | `sudo dpkg -i *.deb` |
-| Linux (x64 rpm) | `zedg-zh-cn-linux-x86_64-*.rpm` | `sudo dnf install *.rpm` |
-| Linux (ARM64) | `zedg-zh-cn-linux-aarch64-*.tar.gz` | `/usr/local`에 압축 해제 |
-| Linux (ARM64 deb) | `zedg-zh-cn-linux-aarch64-*.deb` | `sudo dpkg -i *.deb` |
-| Linux (ARM64 rpm) | `zedg-zh-cn-linux-aarch64-*.rpm` | `sudo dnf install *.rpm` |
-
-### macOS 설치
-
-**안정 버전 (권장):**
-
-```bash
-brew tap x6nux/zedg
-brew install --cask zedg
-```
-
-**프리뷰 버전 (Pre-release):**
-
-```bash
-brew tap x6nux/zedg
-brew install --cask zedg-preview
-```
-
-**DMG 수동 설치:**
-
-Releases에서 DMG를 다운로드하고, ZedG를 Applications로 드래그합니다. Apple 서명이 없기 때문에 처음 실행 시 "앱이 손상되었습니다" 경고가 표시됩니다. 다음 명령으로 해결할 수 있습니다:
-
-```bash
-sudo xattr -rd com.apple.quarantine /Applications/ZedG.app
-```
-
-**Windows Scoop:**
-
-안정 버전:
-
-```powershell
-scoop bucket add zedg https://github.com/x6nux/scoop-zedg
-scoop install zedg
-```
-
-프리뷰 버전 (Pre-release):
-
-```powershell
-scoop bucket add zedg https://github.com/x6nux/scoop-zedg
-scoop install zedg-preview
-```
+> **참고:** 이 저장소는 COPR 및 AUR 패키징 전용입니다. Release 페이지에는 패키징에 필요한 `tar.gz` 소스만 게시합니다([wenyinos/ZedG](https://github.com/wenyinos/ZedG/releases/latest)에서 미러링). 그 외 플랫폼 설치 파일은 업스트림 저장소를 참조하세요.
 
 ## 특징
 
+- **중국어 간체 UI**: 현재 `zh-CN`만 배포되며, 번역 엔진은 다국어 기능을 유지하여 추후 확장 가능
 - AI 자동 스캔으로 번역 대상 Rust 소스 파일 식별
 - 정규식 기반 문자열 추출 + 코드 컨텍스트 수집
 - AI 동시 번역, 3단계 폴백 전략 (JSON -> XML CDATA -> 번호 형식)
@@ -79,12 +24,8 @@ scoop install zedg-preview
 ## 자동화 파이프라인
 
 ```
-01-translate (정시/수동)   Zed 신규 버전 감지, 문자열 추출 및 번역
-       |
-02-build                   3개 플랫폼 컴파일 + patch_agent_env, Release 생성
-       |
-       ├── 03-update-scoop      Scoop Manifest 업데이트
-       └── 04-update-homebrew   Homebrew Cask 업데이트
+05-sync-release (정시/수동)   업스트림 신규 릴리스 감지, tar.gz를 이 저장소 Release에 미러링,
+                             패키징 파일 업데이트, COPR 빌드 트리거, AUR 푸시
 ```
 
 ## 로컬 사용
@@ -148,13 +89,10 @@ OpenAI 호환 API 지원. 우선순위: CLI 옵션 > 환경 변수 > 기본값.
 ```
 zed-globalization/
 ├── .github/workflows/
-│   ├── 01-translate.yml        # 정시 스캔 + AI 번역
-│   ├── 02-build.yml            # 멀티 플랫폼 빌드 + 릴리스
-│   ├── 03-update-scoop.yml    # Scoop Manifest 업데이트
-│   └── 04-update-homebrew.yml # Homebrew Cask 업데이트
+│   └── 05-sync-release.yml    # 업스트림 동기화 + COPR/AUR 패키징
 ├── config/
 │   └── glossary.yaml       # 번역 용어집
-├── i18n/                   # 번역 파일 (zh-CN, ja, ko 등)
+├── i18n/                   # 번역 파일 (zh-CN)
 ├── src/zedl10n/
 │   ├── cli.py              # CLI 엔트리 (scan/extract/translate/replace/convert/pipeline)
 │   ├── scan.py             # AI 스캔
@@ -185,9 +123,9 @@ zed-globalization/
 
 [MIT](../LICENSE)
 
-[stars-url]: https://github.com/x6nux/zed-globalization/stargazers
-[stars-image]: https://img.shields.io/github/stars/x6nux/zed-globalization?style=flat-square&logo=github
-[download-url]: https://github.com/x6nux/zed-globalization/releases/latest
-[download-image]: https://img.shields.io/github/downloads/x6nux/zed-globalization/total?style=flat-square&logo=github
-[license-url]: https://github.com/x6nux/zed-globalization/blob/main/LICENSE
-[license-image]: https://img.shields.io/github/license/x6nux/zed-globalization?style=flat-square
+[stars-url]: https://github.com/wenyinos/ZedG/stargazers
+[stars-image]: https://img.shields.io/github/stars/wenyinos/ZedG?style=flat-square&logo=github
+[download-url]: https://github.com/wenyinos/ZedG/releases/latest
+[download-image]: https://img.shields.io/github/downloads/wenyinos/ZedG/total?style=flat-square&logo=github
+[license-url]: https://github.com/wenyinos/ZedG/blob/main/LICENSE
+[license-image]: https://img.shields.io/github/license/wenyinos/ZedG?style=flat-square

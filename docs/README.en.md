@@ -1,4 +1,4 @@
-# Zed Globalization
+# ZedG — Simplified Chinese Edition of Zed
 
 [![GitHub stars][stars-image]][stars-url]
 [![Github Downloads][download-image]][download-url]
@@ -6,68 +6,13 @@
 
 [简体中文](../README.md)|**English**|[日本語](README.ja.md)|[한국어](README.ko.md)
 
-An AI-driven localization toolchain for the [Zed Editor](https://github.com/zed-industries/zed), with a fully automated translation and build pipeline.
+Simplified Chinese build of the [Zed Editor](https://github.com/zed-industries/zed) (only `zh-CN` is currently published). AI-driven, fully automated translation and build pipeline: extract translatable strings from each upstream release, translate with AI, patch the source and rebuild out of the box.
 
-## Download
-
-Get the pre-built binaries from [Releases](https://github.com/x6nux/zed-globalization/releases/latest):
-
-| Platform | File | Installation |
-|----------|------|-------------|
-| macOS (Universal) | `zedg-zh-cn-macos-universal-*.dmg` | `brew tap x6nux/zedg && brew install --cask zedg` ([more](#macos-installation)) |
-| macOS (Apple Silicon) | `zedg-zh-cn-macos-aarch64-*.dmg` | DMG manual install |
-| macOS (Intel) | `zedg-zh-cn-macos-x86_64-*.dmg` | DMG manual install |
-| Windows (x64) | `zedg-zh-cn-windows-x86_64-*.zip` | `scoop install zedg` ([more](#windows-scoop)) |
-| Windows (ARM64) | `zedg-zh-cn-windows-aarch64-*.zip` | Extract and run `ZedG.exe` |
-| Linux (x64) | `zedg-zh-cn-linux-x86_64-*.tar.gz` | Extract to `/usr/local` |
-| Linux (x64 deb) | `zedg-zh-cn-linux-x86_64-*.deb` | `sudo dpkg -i *.deb` |
-| Linux (x64 rpm) | `zedg-zh-cn-linux-x86_64-*.rpm` | `sudo dnf install *.rpm` |
-| Linux (ARM64) | `zedg-zh-cn-linux-aarch64-*.tar.gz` | Extract to `/usr/local` |
-| Linux (ARM64 deb) | `zedg-zh-cn-linux-aarch64-*.deb` | `sudo dpkg -i *.deb` |
-| Linux (ARM64 rpm) | `zedg-zh-cn-linux-aarch64-*.rpm` | `sudo dnf install *.rpm` |
-
-### macOS Installation
-
-**Stable (Recommended):**
-
-```bash
-brew tap x6nux/zedg
-brew install --cask zedg
-```
-
-**Preview (Pre-release):**
-
-```bash
-brew tap x6nux/zedg
-brew install --cask zedg-preview
-```
-
-**DMG Manual Install:**
-
-Download the DMG from Releases, open it and drag ZedG to Applications. Since the build is not Apple-signed, macOS will show a "damaged" warning on first launch. Run the following command to fix it:
-
-```bash
-sudo xattr -rd com.apple.quarantine /Applications/ZedG.app
-```
-
-**Windows Scoop:**
-
-Stable:
-
-```powershell
-scoop bucket add zedg https://github.com/x6nux/scoop-zedg
-scoop install zedg
-```
-
-Preview (Pre-release):
-
-```powershell
-scoop bucket add zedg https://github.com/x6nux/scoop-zedg
-scoop install zedg-preview
-```
+> **Note:** This repository is only used for COPR and AUR packaging. The Release page only hosts the `tar.gz` sources required for packaging (mirrored from [wenyinos/ZedG](https://github.com/wenyinos/ZedG/releases/latest)); installers for other platforms are available upstream.
 
 ## Features
 
+- **Simplified Chinese UI**: only `zh-CN` is published for now; the translation engine keeps multi-language capability and can be extended later
 - AI-powered scanning to identify translatable Rust source files
 - Regex-based string extraction with code context collection
 - Concurrent AI translation with 3-level fallback (JSON -> XML CDATA -> numbered format)
@@ -79,12 +24,8 @@ scoop install zedg-preview
 ## Automation Pipeline
 
 ```
-01-translate (cron/manual)   Detect new Zed releases, extract and translate strings
-       |
-02-build                     Cross-platform compilation + patch_agent_env, create Release
-       |
-       ├── 03-update-scoop        Update Scoop Manifest
-       └── 04-update-homebrew     Update Homebrew Cask
+05-sync-release (cron/manual)   Detect new upstream release, mirror tar.gz to this repo's Release,
+                                update packaging files, trigger COPR build, push to AUR
 ```
 
 ## Local Usage
@@ -148,13 +89,10 @@ Compatible with any OpenAI-compatible API. Priority: CLI flag > env variable > d
 ```
 zed-globalization/
 ├── .github/workflows/
-│   ├── 01-translate.yml        # Scheduled scan + AI translation
-│   ├── 02-build.yml            # Cross-platform build + release
-│   ├── 03-update-scoop.yml    # Scoop Manifest update
-│   └── 04-update-homebrew.yml # Homebrew Cask update
+│   └── 05-sync-release.yml    # Upstream sync + COPR/AUR packaging
 ├── config/
 │   └── glossary.yaml       # Translation glossary
-├── i18n/                   # Translation files (zh-CN, ja, ko, etc.)
+├── i18n/                   # Translation files (zh-CN)
 ├── src/zedl10n/
 │   ├── cli.py              # CLI entry (scan/extract/translate/replace/convert/pipeline)
 │   ├── scan.py             # AI scan for translatable files
@@ -185,9 +123,9 @@ Multiple layers ensure Rust compilation safety during source replacement:
 
 [MIT](../LICENSE)
 
-[stars-url]: https://github.com/x6nux/zed-globalization/stargazers
-[stars-image]: https://img.shields.io/github/stars/x6nux/zed-globalization?style=flat-square&logo=github
-[download-url]: https://github.com/x6nux/zed-globalization/releases/latest
-[download-image]: https://img.shields.io/github/downloads/x6nux/zed-globalization/total?style=flat-square&logo=github
-[license-url]: https://github.com/x6nux/zed-globalization/blob/main/LICENSE
-[license-image]: https://img.shields.io/github/license/x6nux/zed-globalization?style=flat-square
+[stars-url]: https://github.com/wenyinos/ZedG/stargazers
+[stars-image]: https://img.shields.io/github/stars/wenyinos/ZedG?style=flat-square&logo=github
+[download-url]: https://github.com/wenyinos/ZedG/releases/latest
+[download-image]: https://img.shields.io/github/downloads/wenyinos/ZedG/total?style=flat-square&logo=github
+[license-url]: https://github.com/wenyinos/ZedG/blob/main/LICENSE
+[license-image]: https://img.shields.io/github/license/wenyinos/ZedG?style=flat-square

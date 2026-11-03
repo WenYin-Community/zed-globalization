@@ -68,10 +68,7 @@ scan (AI扫描) -> extract (正则提取) -> translate (AI翻译) -> replace (�
 
 ### CI/CD 工作流 (.github/workflows/)
 
-1. **01-translate.yml** - 定时(每日3次)+手动触发，检测 Zed 新版本 → AI 翻译 → 推送到 i18n 分支
-2. **02-build.yml** - 由翻译工作流链式触发，6 并行构建矩阵 (Win/Linux/macOS × x64/ARM)
-3. **03-update-scoop.yml** - Release 后更新 Windows Scoop Manifest
-4. **04-update-homebrew.yml** - 构建完成后更新 macOS Homebrew Cask
+- **05-sync-release.yml** - 每天定时/手动触发，检测上游新版本 → 下载二进制到本仓库 Release（备份）→ 更新 AUR/COPR 打包文件 → 触发 COPR 构建 → 推送 AUR
 
 ### 配置文件
 
