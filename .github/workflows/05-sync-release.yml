@@ -1,8 +1,8 @@
-name: 05 同步上游二进制包并触发 COPR 构建
+name: 05 同步上游二进制包并触发 AUR/COPR 打包
 
 on:
   schedule:
-    - cron: "0 1 * * *"  # 每天同步一次
+    - cron: "0 9 * * *"  # 每天 UTC 09:00 = 北京时间 17:00（上游 12:00 打包，留 5 小时编译）
   workflow_dispatch:
     inputs:
       force:
@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 env:
-  UPSTREAM_REPO: x6nux/zed-globalization
+  UPSTREAM_REPO: wenyinos/ZedG
 
 jobs:
   sync:
@@ -60,7 +60,7 @@ jobs:
           fi
 
       - name: 下载上游 tar.gz 并上传到本仓库 Release
-        if: steps.check.outputs.sync == 'true'
+        if: steps.check.outputs.push == 'true'
         env:
           VERSION: ${{ steps.check.outputs.version }}
           GH_TOKEN: ${{ github.token }}
@@ -72,11 +72,25 @@ jobs:
             FILE="zedg-zh-cn-linux-${arch}-${VERSION}.tar.gz"
             URL="https://github.com/${{ env.UPSTREAM_REPO }}/releases/download/${VERSION}/${FILE}"
             echo "下载: $URL"
-            curl -fSL "$URL" -o "assets/${FILE}"
+            if curl -fSL "$URL" -o "assets/${FILE}"; then
+              echo "  ${arch} 下载成功"
+            else
+              echo "  上游暂无 ${arch} 产物，跳过（待编译完成后再同步）"
+              rm -f "assets/${FILE}"
+            fi
           done
 
+          if [ -z "$(ls -A assets 2>/dev/null)" ]; then
+            echo "上游未提供任何可用产物，中止"
+            exit 1
+          fi
+
           if gh release view "$VERSION" --repo "${{ github.repository }}" &>/dev/null; then
-            echo "Release $VERSION 已存在，跳过创建"
+            echo "Release $VERSION 已存在，补充/覆盖上传资源"
+            gh release upload "$VERSION" \
+              --repo "${{ github.repository }}" \
+              --clobber \
+              assets/*.tar.gz
           else
             gh release create "$VERSION" \
               --repo "${{ github.repository }}" \
@@ -89,10 +103,15 @@ jobs:
           sed -i "s/^Version:.*/Version:        $VER/" packaging/rpm/zedg-copr.spec
           sed -i "s/^pkgver=.*/pkgver=$VER/" packaging/archlinux/PKGBUILD
 
-          X86_SUM=$(sha256sum "assets/zedg-zh-cn-linux-x86_64-${VERSION}.tar.gz" | awk '{print $1}')
-          AARCH64_SUM=$(sha256sum "assets/zedg-zh-cn-linux-aarch64-${VERSION}.tar.gz" | awk '{print $1}')
-          sed -i "s/sha256sums_x86_64=('.*')/sha256sums_x86_64=('$X86_SUM')/" packaging/archlinux/PKGBUILD
-          sed -i "s/sha256sums_aarch64=('.*')/sha256sums_aarch64=('$AARCH64_SUM')/" packaging/archlinux/PKGBUILD
+          for arch in x86_64 aarch64; do
+            SUM=$(sha256sum "assets/zedg-zh-cn-linux-${arch}-${VERSION}.tar.gz" 2>/dev/null | awk '{print $1}')
+            if [ -z "$SUM" ]; then
+              echo "${arch} 无产物，保留现有校验和"
+              continue
+            fi
+            sed -i "s/sha256sums_${arch}=('.*')/sha256sums_${arch}=('$SUM')/" packaging/archlinux/PKGBUILD
+            echo "${arch} 校验和: $SUM"
+          done
 
       - name: 生成 .SRCINFO
         if: steps.check.outputs.push == 'true'

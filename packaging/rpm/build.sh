@@ -2,7 +2,7 @@
 # 从 GitHub Releases 自动获取最新版本并构建 RPM
 set -euo pipefail
 
-REPO="x6nux/zed-globalization"
+REPO="wenyinos/ZedG"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SPEC_FILE="$SCRIPT_DIR/zedg-from-release.spec"
 
