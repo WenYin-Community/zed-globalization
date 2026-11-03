@@ -35,7 +35,7 @@
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=wenyinos/ZedG&type=Date)](https://star-history.com/#wenyinos/ZedG&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=WenYin-Community/zed-globalization&type=Date)](https://star-history.com/#WenYin-Community/zed-globalization&Date)
 
 > **Zed 汉化版** | Zed 简体中文版 | Zed 中文版 | Zed Chinese | Zed Simplified Chinese | Zed Localized | Zed i18n | Zed l10n
 
@@ -159,12 +159,12 @@ zed-globalization/
 
 [MIT](LICENSE)
 
-[stars-url]: https://github.com/wenyinos/ZedG/stargazers
-[stars-image]: https://img.shields.io/github/stars/wenyinos/ZedG?style=flat-square&logo=github
-[download-url]: https://github.com/wenyinos/ZedG/releases/latest
-[download-image]: https://img.shields.io/github/downloads/wenyinos/ZedG/total?style=flat-square&logo=github
-[license-url]: https://github.com/wenyinos/ZedG/blob/main/LICENSE
-[license-image]: https://img.shields.io/github/license/wenyinos/ZedG?style=flat-square
+[stars-url]: https://github.com/WenYin-Community/zed-globalization/stargazers
+[stars-image]: https://img.shields.io/github/stars/WenYin-Community/zed-globalization?style=flat-square&logo=github
+[download-url]: https://github.com/WenYin-Community/zed-globalization/releases/latest
+[download-image]: https://img.shields.io/github/downloads/WenYin-Community/zed-globalization/total?style=flat-square&logo=github
+[license-url]: https://github.com/WenYin-Community/zed-globalization/blob/main/LICENSE
+[license-image]: https://img.shields.io/github/license/WenYin-Community/zed-globalization?style=flat-square
 
 ---
 
