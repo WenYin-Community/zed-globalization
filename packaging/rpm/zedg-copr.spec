@@ -24,12 +24,9 @@ tar -xzf %{SOURCE1} -C %{buildroot}
 
 %files
 # 清单必须与 CI 打出的 tar.gz 布局保持一致，新增/删除文件时同步更新
+# 上游 2026-11 起移除 zedg-activate、/usr/bin/zed 与 /usr/libexec/zed-cli
 %attr(755, root, root) /usr/bin/zedg
-%attr(755, root, root) /usr/bin/zedg-activate
 %attr(755, root, root) /usr/libexec/zedg
-# 生态兼容软链（issue #37）
-/usr/bin/zed
-/usr/libexec/zed-cli
 %dir /usr/lib/zedg
 /usr/lib/zedg/libgit2.so.*
 /usr/share/applications/zedg.desktop
