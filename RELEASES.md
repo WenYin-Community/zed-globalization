@@ -11,8 +11,8 @@
 
 | 版本 | 发布日期 | 资产文件 | 大小 | SHA-256 |
 |------|---------|---------|------|---------|
-| `v1.26.2` | 2026-10-29 | `zedg-zh-cn-linux-aarch64-v1.26.2.tar.gz` | 113.9 MB | `22e244a576d954daa25950ca66553ee781bf13909d68bb74772332a1a4c3d591` |
-| `v1.26.2` | 2026-10-29 | `zedg-zh-cn-linux-x86_64-v1.26.2.tar.gz` | 120.6 MB | `f714ce5d00c629c77a44488d11fe1841ea8451f57db12bdb73a1e2445d34c286` |
+| `v1.26.2` | 2026-10-29 | `zedg-zh-cn-linux-aarch64-v1.26.2.tar.gz` | 127.3 MB | `055b3dfa19268277c13bf750ee27df168ef83d77e4b4e55324b5687bbfd71f8b` |
+| `v1.26.2` | 2026-10-29 | `zedg-zh-cn-linux-x86_64-v1.26.2.tar.gz` | 133.9 MB | `e6b9c8ebcb9cbc94b9a25fe9d04ed39f211730ef2ee39d0ef6ab53a033cd0a03` |
 | `v1.25.3` | 2026-10-24 | `zedg-zh-cn-linux-aarch64-v1.25.3.tar.gz` | 112.6 MB | `8bd71087458b433b7a64f28d44cb1c966a68e1629fe7f09657e1b47ea5593763` |
 | `v1.25.3` | 2026-10-24 | `zedg-zh-cn-linux-x86_64-v1.25.3.tar.gz` | 119.3 MB | `e9d1837f7d8d44f4a079841d03f28b6f57c79698598cfca6ad27406171a69f61` |
 | `v1.25.2` | 2026-10-23 | `zedg-zh-cn-linux-aarch64-v1.25.2.tar.gz` | 112.6 MB | `686e29f0bd36c5149c52cfdd704ac557372c40fb20fcb4352f7c337e86237606` |
