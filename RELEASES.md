@@ -3,14 +3,16 @@
 本仓库 Release 页面存放 AUR / COPR 打包所需的 `tar.gz` 源文件（从上游 `wenyinos/ZedG` 镜像）。
 本文件记录全部已发布版本的资产与 SHA-256，用于仓库迁移或资产恢复后的完整性校验。
 
-- 版本数：41
-- 资产数：82
-- 总体积：10.5 GB
+- 版本数：42
+- 资产数：84
+- 总体积：10.8 GB
 
 > 清单由 GitHub API 自动生成，更新版本后需重新生成。
 
 | 版本 | 发布日期 | 资产文件 | 大小 | SHA-256 |
 |------|---------|---------|------|---------|
+| `v1.27.0` | 2026-11-06 | `zedg-zh-cn-linux-aarch64-v1.27.0.tar.gz` | 128.0 MB | `6a4b64f790345ee44559b03453d4fe2972e5a8453b11dc3c37fb3d370dfa8e81` |
+| `v1.27.0` | 2026-11-06 | `zedg-zh-cn-linux-x86_64-v1.27.0.tar.gz` | 134.6 MB | `f763d7569169bbd135098952e669437a514bce540ff9e37e105bd8c2e4228379` |
 | `v1.26.2` | 2026-10-29 | `zedg-zh-cn-linux-aarch64-v1.26.2.tar.gz` | 127.3 MB | `055b3dfa19268277c13bf750ee27df168ef83d77e4b4e55324b5687bbfd71f8b` |
 | `v1.26.2` | 2026-10-29 | `zedg-zh-cn-linux-x86_64-v1.26.2.tar.gz` | 133.9 MB | `e6b9c8ebcb9cbc94b9a25fe9d04ed39f211730ef2ee39d0ef6ab53a033cd0a03` |
 | `v1.25.3` | 2026-10-24 | `zedg-zh-cn-linux-aarch64-v1.25.3.tar.gz` | 112.6 MB | `8bd71087458b433b7a64f28d44cb1c966a68e1629fe7f09657e1b47ea5593763` |
