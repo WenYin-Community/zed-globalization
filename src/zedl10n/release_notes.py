@@ -52,7 +52,7 @@ def _build_project_header(
         f"## ZedG {version}",
         "",
         f"> [Zed](https://zed.dev) 编辑器的{lang_name}本地化构建版本，"
-        "由 [zed-globalization](https://github.com/wenyinos/ZedG) "
+        "由 [zed-globalization](https://github.com/WenYin-Community/ZedG) "
         "自动翻译并编译。",
         "",
         f"**目标语言**: {lang_name} (`{lang}`)",

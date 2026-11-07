@@ -8,7 +8,7 @@
 
 Simplified Chinese build of the [Zed Editor](https://github.com/zed-industries/zed) (only `zh-CN` is currently published). AI-driven, fully automated translation and build pipeline: extract translatable strings from each upstream release, translate with AI, patch the source and rebuild out of the box.
 
-> **Note:** This repository is only used for COPR and AUR packaging. The Release page only hosts the `tar.gz` sources required for packaging (mirrored from [wenyinos/ZedG](https://github.com/wenyinos/ZedG/releases/latest)); installers for other platforms are available upstream.
+> **Note:** This repository is only used for COPR and AUR packaging. The Release page only hosts the `tar.gz` sources required for packaging (mirrored from [WenYin-Community/ZedG](https://github.com/WenYin-Community/ZedG/releases/latest)); installers for other platforms are available upstream.
 
 ## Features
 

@@ -8,7 +8,7 @@
 
 [Zed 편집기](https://github.com/zed-industries/zed)의 중국어 간체 버전(현재 `zh-CN`만 배포). AI 기반의 완전 자동 번역 및 빌드 파이프라인: 업스트림 릴리스에서 번역 대상 문자열을 추출하고, AI로 번역한 뒤 소스를 치환하여 다시 빌드합니다.
 
-> **참고:** 이 저장소는 COPR 및 AUR 패키징 전용입니다. Release 페이지에는 패키징에 필요한 `tar.gz` 소스만 게시합니다([wenyinos/ZedG](https://github.com/wenyinos/ZedG/releases/latest)에서 미러링). 그 외 플랫폼 설치 파일은 업스트림 저장소를 참조하세요.
+> **참고:** 이 저장소는 COPR 및 AUR 패키징 전용입니다. Release 페이지에는 패키징에 필요한 `tar.gz` 소스만 게시합니다([WenYin-Community/ZedG](https://github.com/WenYin-Community/ZedG/releases/latest)에서 미러링). 그 외 플랫폼 설치 파일은 업스트림 저장소를 참조하세요.
 
 ## 특징
 

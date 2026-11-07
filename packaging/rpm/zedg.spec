@@ -3,7 +3,7 @@ Version:        %{_zedg_version}
 Release:        1%{?dist}
 Summary:        Zed editor with globalization support
 License:        AGPL-3.0-or-later AND Apache-2.0 AND GPL-3.0-or-later
-URL:            https://github.com/wenyinos/ZedG
+URL:            https://github.com/WenYin-Community/ZedG
 
 AutoReqProv:    no
 

@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SPEC_TEMPLATE="$SCRIPT_DIR/zedg-copr.spec"
 
 # 获取最新版本
-LATEST=$(curl -sf https://api.github.com/repos/wenyinos/ZedG/releases/latest | jq -r '.tag_name')
+LATEST=$(curl -sf https://api.github.com/repos/WenYin-Community/ZedG/releases/latest | jq -r '.tag_name')
 VERSION="${LATEST#v}"
 echo ">>> 最新版本: $VERSION"
 

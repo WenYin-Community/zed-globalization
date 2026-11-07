@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 env:
-  UPSTREAM_REPO: wenyinos/ZedG
+  UPSTREAM_REPO: WenYin-Community/ZedG
 
 jobs:
   sync:

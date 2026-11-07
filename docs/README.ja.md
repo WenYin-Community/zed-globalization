@@ -8,7 +8,7 @@
 
 [Zed エディタ](https://github.com/zed-industries/zed) の簡体字中国語版（現在公開しているのは `zh-CN` のみ）。AI 駆動の全自動翻訳・ビルドパイプライン：上流の各リリースから翻訳対象文字列を抽出し、AI で翻訳、ソースを置換して再ビルドします。
 
-> **注記：** このリポジトリは COPR と AUR のパッケージング専用です。Release ページにはパッケージに必要な `tar.gz` ソースのみを配置しています（[wenyinos/ZedG](https://github.com/wenyinos/ZedG/releases/latest) からミラー）。その他のプラットフォーム向けインストーラーは上流リポジトリを参照してください。
+> **注記：** このリポジトリは COPR と AUR のパッケージング専用です。Release ページにはパッケージに必要な `tar.gz` ソースのみを配置しています（[WenYin-Community/ZedG](https://github.com/WenYin-Community/ZedG/releases/latest) からミラー）。その他のプラットフォーム向けインストーラーは上流リポジトリを参照してください。
 
 ## 特徴
 

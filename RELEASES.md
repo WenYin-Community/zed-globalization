@@ -1,6 +1,6 @@
 # Release 资产备份清单
 
-本仓库 Release 页面存放 AUR / COPR 打包所需的 `tar.gz` 源文件（从上游 `wenyinos/ZedG` 镜像）。
+本仓库 Release 页面存放 AUR / COPR 打包所需的 `tar.gz` 源文件（从上游 `WenYin-Community/ZedG` 镜像）。
 本文件记录全部已发布版本的资产与 SHA-256，用于仓库迁移或资产恢复后的完整性校验。
 
 - 版本数：42
